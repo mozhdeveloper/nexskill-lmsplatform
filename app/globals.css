@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ns-background: 250 250 249;
+  --ns-surface: 255 255 255;
+  --ns-surface-raised: 255 255 255;
+  --ns-border: 228 228 224;
+  --ns-foreground: 24 24 27;
+  --ns-muted: 113 113 122;
+  --ns-primary: 23 37 84;
+  --ns-primary-foreground: 255 255 255;
+  --ns-secondary: 20 184 166;
+  --ns-success: 22 163 74;
+  --ns-warning: 202 138 4;
+  --ns-error: 220 38 38;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+:root[data-theme="dark"] {
+  --ns-background: 15 15 17;
+  --ns-surface: 24 24 27;
+  --ns-surface-raised: 32 32 36;
+  --ns-border: 45 45 50;
+  --ns-foreground: 244 244 245;
+  --ns-muted: 161 161 170;
+  --ns-primary: 129 140 248;
+  --ns-primary-foreground: 15 15 17;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ns-background: 15 15 17;
+    --ns-surface: 24 24 27;
+    --ns-surface-raised: 32 32 36;
+    --ns-border: 45 45 50;
+    --ns-foreground: 244 244 245;
+    --ns-muted: 161 161 170;
+    --ns-primary: 129 140 248;
+    --ns-primary-foreground: 15 15 17;
+  }
+}
+
+body {
+  background-color: rgb(var(--ns-background));
+  color: rgb(var(--ns-foreground));
+}
