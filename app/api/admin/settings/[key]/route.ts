@@ -5,13 +5,13 @@ import { ForbiddenError, hasPermission } from "@/lib/domains/identity/permission
 import { writeAuditLog } from "@/lib/domains/system/audit";
 
 export async function PATCH(request: NextRequest, { params }: { params: { key: string } }) {
-  const supabase = createSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return requireAuthResponse();
-
   try {
+    const supabase = createSupabaseServerClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return requireAuthResponse();
+
     if (!(await hasPermission(supabase, user.id, "settings.manage"))) {
       throw new ForbiddenError("You cannot change platform settings.");
     }
