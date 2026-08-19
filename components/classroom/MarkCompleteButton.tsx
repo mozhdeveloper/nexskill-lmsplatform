@@ -27,7 +27,7 @@ export function MarkCompleteButton({ lessonId, alreadyCompleted }: { lessonId: s
 
   return (
     <div>
-      <Button onClick={handleClick} disabled={loading}>
+      <Button onClick={handleClick} loading={loading}>
         {loading ? "Saving..." : "Mark lesson complete"}
       </Button>
       {error && <p className="mt-2 text-sm text-error">{error}</p>}

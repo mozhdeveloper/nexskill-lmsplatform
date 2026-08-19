@@ -19,11 +19,11 @@ export default async function SubmissionReviewPage({ params }: { params: { submi
   } catch (err) {
     if (err instanceof ForbiddenError || err instanceof NotFoundError) {
       return (
-        <main className="mx-auto max-w-xl px-4 py-16">
+        <div className="mx-auto max-w-xl px-4 py-16">
           <Card>
             <p className="text-error">{err.message}</p>
           </Card>
-        </main>
+        </div>
       );
     }
     throw err;
@@ -34,7 +34,7 @@ export default async function SubmissionReviewPage({ params }: { params: { submi
   const { data: student } = await supabase.from("profiles").select("display_name").eq("id", submission.student_id).single();
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <div className="mb-2 flex items-center gap-3">
         <h1 className="text-2xl font-semibold">{assignment.title}</h1>
         <Badge>Attempt {submission.attempt_number}</Badge>
@@ -88,6 +88,6 @@ export default async function SubmissionReviewPage({ params }: { params: { submi
           </Card>
         )
       )}
-    </main>
+    </div>
   );
 }

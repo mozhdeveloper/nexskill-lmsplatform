@@ -33,7 +33,7 @@ export default function NewCoursePage() {
   }
 
   return (
-    <main className="mx-auto max-w-xl px-4 py-12">
+    <div className="mx-auto max-w-xl px-4 py-12">
       <h1 className="mb-6 text-2xl font-semibold">New course</h1>
       <Card>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,11 +50,11 @@ export default function NewCoursePage() {
             <Textarea rows={4} value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
           {error && <p className="text-sm text-error">{error}</p>}
-          <Button type="submit" disabled={loading}>
+          <Button type="submit" loading={loading}>
             {loading ? "Creating..." : "Create draft"}
           </Button>
         </form>
       </Card>
-    </main>
+    </div>
   );
 }

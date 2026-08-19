@@ -17,7 +17,7 @@ export default async function AdminCoachApplicationDetailPage({ params }: { para
   if (!application) redirect("/admin/coaches");
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
+    <div className="mx-auto max-w-2xl px-4 py-12">
       <div className="mb-2 flex items-center gap-3">
         <h1 className="text-2xl font-semibold">{application.public_name}</h1>
         <Badge tone={application.status === "approved" ? "success" : application.status === "rejected" ? "error" : "warning"}>
@@ -61,6 +61,6 @@ export default async function AdminCoachApplicationDetailPage({ params }: { para
           </Card>
         )
       )}
-    </main>
+    </div>
   );
 }

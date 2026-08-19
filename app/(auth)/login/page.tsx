@@ -6,7 +6,8 @@ import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
-import { Card } from "@/components/ui/Card";
+import { AuthBrandPanel } from "@/components/marketing/AuthBrandPanel";
+import { QuickLoginPanel } from "@/components/auth/QuickLoginPanel";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,31 +32,45 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
-      <Card>
-        <h1 className="mb-1 text-xl font-semibold">Sign in to Nexskill</h1>
-        <p className="mb-6 text-sm text-muted">Learn a skill. Prove a skill. Build your future.</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label>Email</Label>
-            <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <Label>Password</Label>
-            <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          {error && <p className="text-sm text-error">{error}</p>}
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
-        <p className="mt-4 text-sm text-muted">
-          No account?{" "}
-          <Link href="/register" className="text-primary underline">
-            Register
+    <main className="flex min-h-screen">
+      <AuthBrandPanel />
+      <div className="flex flex-1 items-center justify-center bg-dot-grid px-4 py-12">
+        <div className="w-full max-w-sm animate-fade-in-up">
+          <Link href="/" className="mb-8 flex items-center gap-2 text-lg font-semibold lg:hidden">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-sm font-bold text-white shadow-soft">
+              N
+            </span>
+            NexSkill
           </Link>
-        </p>
-      </Card>
+
+          <h1 className="mb-1 text-2xl font-semibold tracking-tight">Welcome back</h1>
+          <p className="mb-6 text-sm text-muted">Sign in to continue learning or teaching.</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label>Email</Label>
+              <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <Label>Password</Label>
+              <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            {error && <p className="text-sm text-error">{error}</p>}
+            <Button type="submit" loading={loading} className="w-full">
+              Sign in
+            </Button>
+          </form>
+
+          <p className="mt-4 text-sm text-muted">
+            No account?{" "}
+            <Link href="/register" className="font-medium text-primary hover:underline">
+              Register
+            </Link>
+          </p>
+
+          <QuickLoginPanel />
+        </div>
+      </div>
     </main>
   );
 }

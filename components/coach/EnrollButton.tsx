@@ -30,7 +30,7 @@ export function EnrollButton({ courseId, courseHref }: { courseId: string; cours
 
   return (
     <div>
-      <Button onClick={handleEnroll} disabled={loading}>
+      <Button onClick={handleEnroll} loading={loading}>
         {loading ? "Enrolling..." : "Enroll for free"}
       </Button>
       {error && <p className="mt-2 text-sm text-error">{error}</p>}

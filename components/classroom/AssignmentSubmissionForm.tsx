@@ -94,7 +94,7 @@ export function AssignmentSubmissionForm({
         )
       )}
       {error && <p className="text-sm text-error">{error}</p>}
-      <Button type="submit" disabled={loading}>
+      <Button type="submit" loading={loading}>
         {loading ? "Submitting..." : "Submit assignment"}
       </Button>
     </form>

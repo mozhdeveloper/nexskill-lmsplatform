@@ -1,7 +1,10 @@
-import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { Hero } from "@/components/marketing/Hero";
+import { HowItWorks } from "@/components/marketing/HowItWorks";
+import { CourseGrid, type CourseCardData } from "@/components/marketing/CourseGrid";
+import { CtaBanner } from "@/components/marketing/CtaBanner";
 
 export default async function HomePage() {
   const supabase = createSupabaseServerClient();
@@ -13,50 +16,23 @@ export default async function HomePage() {
     .limit(24);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-16">
-      <header className="mb-12 flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-secondary">Nexskill</p>
-          <h1 className="mt-1 text-3xl font-semibold">Learn a Skill. Prove a Skill. Build Your Future.</h1>
-        </div>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href="/become-a-coach" className="text-muted hover:text-foreground">
-            Become a coach
-          </Link>
-          <Link href="/login" className="text-muted hover:text-foreground">
-            Sign in
-          </Link>
-          <Link href="/register" className="rounded-md bg-primary px-3 py-1.5 text-primary-foreground">
-            Get started
-          </Link>
-        </nav>
-      </header>
+    <>
+      <SiteHeader />
+      <Hero />
+      <HowItWorks />
 
-      <h2 className="mb-4 text-lg font-semibold">Published courses</h2>
-      {!courses || courses.length === 0 ? (
-        <Card>
-          <p className="text-sm text-muted">
-            No published courses yet. Once an approved coach publishes a course, it will appear here.
-          </p>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => (
-            <Link key={course.id} href={`/courses/${course.slug}`}>
-              <Card className="h-full transition hover:border-primary">
-                <div className="mb-2 flex items-center justify-between">
-                  <Badge tone={course.pricing_model === "free" ? "success" : "primary"}>
-                    {course.pricing_model === "free" ? "Free" : "Paid"}
-                  </Badge>
-                  <Badge>{course.level}</Badge>
-                </div>
-                <h3 className="font-semibold">{course.title}</h3>
-                {course.subtitle && <p className="mt-1 text-sm text-muted">{course.subtitle}</p>}
-              </Card>
-            </Link>
-          ))}
+      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <div className="mb-8 flex items-end justify-between">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight">Explore courses</h2>
+            <p className="mt-1 text-sm text-muted">Published, ready to learn today.</p>
+          </div>
         </div>
-      )}
-    </main>
+        <CourseGrid courses={(courses ?? []) as unknown as CourseCardData[]} />
+      </section>
+
+      <CtaBanner />
+      <SiteFooter />
+    </>
   );
 }

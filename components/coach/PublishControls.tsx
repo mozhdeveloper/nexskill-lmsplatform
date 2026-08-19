@@ -32,7 +32,7 @@ export function PublishControls({ courseId, status }: { courseId: string; status
 
   return (
     <div>
-      <Button onClick={handleSubmitForReview} disabled={loading}>
+      <Button onClick={handleSubmitForReview} loading={loading}>
         {loading ? "Submitting..." : "Submit & publish"}
       </Button>
       {error && <p className="mt-2 text-sm text-error">{error}</p>}

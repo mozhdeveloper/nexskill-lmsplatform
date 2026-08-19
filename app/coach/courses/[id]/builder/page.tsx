@@ -29,7 +29,7 @@ export default async function CourseBuilderPage({ params }: { params: { id: stri
   const { data: assignments } = await supabase.from("assignments").select("id, title").eq("course_id", params.id);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <div className="mb-2 flex items-center gap-3">
         <h1 className="text-2xl font-semibold">{course.title}</h1>
         <Badge>{course.status.replace(/_/g, " ")}</Badge>
@@ -73,6 +73,6 @@ export default async function CourseBuilderPage({ params }: { params: { id: stri
         <h2 className="mb-3 text-sm font-semibold uppercase text-muted">Publish</h2>
         <PublishControls courseId={params.id} status={course.status} />
       </Card>
-    </main>
+    </div>
   );
 }

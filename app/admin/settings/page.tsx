@@ -16,7 +16,7 @@ export default async function AdminSettingsPage() {
   const valueByKey = new Map((settings ?? []).map((s) => [s.key, s.value]));
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-12">
+    <div className="mx-auto max-w-2xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Platform settings</h1>
       <Card>
         <SettingToggle
@@ -34,6 +34,6 @@ export default async function AdminSettingsPage() {
         Other settings (commission rate, access duration defaults) are stored in platform_settings and editable via
         this same pattern — see docs/database.md §2 System.
       </p>
-    </main>
+    </div>
   );
 }

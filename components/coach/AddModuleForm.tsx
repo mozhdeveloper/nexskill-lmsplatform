@@ -30,7 +30,7 @@ export function AddModuleForm({ courseId }: { courseId: string }) {
   return (
     <form onSubmit={handleSubmit} className="flex items-center gap-2">
       <Input placeholder="New module title" required value={title} onChange={(e) => setTitle(e.target.value)} />
-      <Button type="submit" disabled={loading} variant="secondary">
+      <Button type="submit" loading={loading} variant="secondary">
         {loading ? "Adding..." : "Add module"}
       </Button>
       {error && <p className="text-sm text-error">{error}</p>}

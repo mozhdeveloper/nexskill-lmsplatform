@@ -21,7 +21,7 @@ export default async function ReviewQueuePage() {
   const studentNameById = new Map((students ?? []).map((s) => [s.id, s.display_name]));
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Review queue</h1>
       {queue.length === 0 ? (
         <Card>
@@ -42,6 +42,6 @@ export default async function ReviewQueuePage() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

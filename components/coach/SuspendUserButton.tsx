@@ -28,7 +28,7 @@ export function SuspendUserButton({ userId, status }: { userId: string; status: 
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant={status === "active" ? "danger" : "secondary"} onClick={handleClick} disabled={loading}>
+      <Button variant={status === "active" ? "danger" : "secondary"} onClick={handleClick} loading={loading}>
         {loading ? "Saving..." : status === "active" ? "Suspend" : "Reinstate"}
       </Button>
       {error && <span className="text-xs text-error">{error}</span>}

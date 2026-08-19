@@ -19,7 +19,7 @@ export default async function AdminCoursesPage() {
     .limit(50);
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">All courses</h1>
       <div className="space-y-2">
         {(courses ?? []).map((c) => {
@@ -35,6 +35,6 @@ export default async function AdminCoursesPage() {
           );
         })}
       </div>
-    </main>
+    </div>
   );
 }

@@ -20,7 +20,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: {
   const { data: users } = await query;
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Users</h1>
       <form className="mb-6">
         <input
@@ -45,6 +45,6 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: {
           </Card>
         ))}
       </div>
-    </main>
+    </div>
   );
 }

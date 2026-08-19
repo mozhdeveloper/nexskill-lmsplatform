@@ -19,11 +19,11 @@ export default async function CertificateDetailPage({ params }: { params: { id: 
 
   if (!certificate || certificate.student_id !== user.id) {
     return (
-      <main className="mx-auto max-w-xl px-4 py-16">
+      <div className="mx-auto max-w-xl px-4 py-16">
         <Card>
           <p className="text-error">Certificate not found.</p>
         </Card>
-      </main>
+      </div>
     );
   }
 
@@ -31,7 +31,7 @@ export default async function CertificateDetailPage({ params }: { params: { id: 
   const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/verify/${certificate.certificate_number}`;
 
   return (
-    <main className="mx-auto max-w-xl px-4 py-16">
+    <div className="mx-auto max-w-xl px-4 py-16">
       <Card>
         <Badge tone="success">Issued</Badge>
         <h1 className="mt-3 text-xl font-semibold">{course?.title}</h1>
@@ -44,6 +44,6 @@ export default async function CertificateDetailPage({ params }: { params: { id: 
           </Link>
         </p>
       </Card>
-    </main>
+    </div>
   );
 }

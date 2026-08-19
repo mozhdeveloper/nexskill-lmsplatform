@@ -21,11 +21,11 @@ export default async function LessonPage({ params }: { params: { courseId: strin
   } catch (err) {
     if (err instanceof ForbiddenError || err instanceof NotFoundError) {
       return (
-        <main className="mx-auto max-w-xl px-4 py-16">
+        <div className="mx-auto max-w-xl px-4 py-16">
           <Card>
             <p className="text-error">{err.message}</p>
           </Card>
-        </main>
+        </div>
       );
     }
     throw err;
@@ -114,9 +114,9 @@ export default async function LessonPage({ params }: { params: { courseId: strin
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-[calc(100vh-57px)]">
       <CurriculumSidebar state={state} activeLessonId={lesson.id} />
-      <main className="flex-1 p-8">
+      <div className="flex-1 p-8">
         <h1 className="text-2xl font-semibold">{lesson.title}</h1>
         <Card className="mt-4">
           <LessonContentRenderer lessonType={lesson.lessonType} />
@@ -127,7 +127,7 @@ export default async function LessonPage({ params }: { params: { courseId: strin
             <MarkCompleteButton lessonId={lesson.id} alreadyCompleted={lesson.progressStatus === "completed"} />
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

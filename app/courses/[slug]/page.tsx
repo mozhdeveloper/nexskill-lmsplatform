@@ -3,6 +3,26 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { EnrollButton } from "@/components/coach/EnrollButton";
+import { SiteHeader } from "@/components/layout/SiteHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+
+const lessonTypeIcon: Record<string, string> = {
+  video: "▶",
+  rich_text: "📄",
+  practical_assignment: "✏️",
+  quiz: "❓",
+  exam: "📝",
+  checklist: "☑",
+  discussion: "💬",
+  project: "🧩",
+  survey: "📊",
+  audio: "🎧",
+  pdf: "📎",
+  file_download: "⬇",
+  presentation: "🖥",
+  external_resource: "🔗",
+  live_class: "🎥",
+};
 
 export default async function CourseSalesPage({ params }: { params: { slug: string } }) {
   const supabase = createSupabaseServerClient();
@@ -23,38 +43,69 @@ export default async function CourseSalesPage({ params }: { params: { slug: stri
   const coach = (course as unknown as { coach_profiles: { slug: string; headline: string | null; profiles: { display_name: string } | null } | null })
     .coach_profiles;
 
+  const lessonCount = (modules ?? []).reduce((sum, m) => sum + (m.lessons?.length ?? 0), 0);
+
   return (
-    <main className="mx-auto max-w-3xl px-4 py-16">
-      <div className="mb-2 flex items-center gap-2">
-        <Badge tone={course.pricing_model === "free" ? "success" : "primary"}>{course.pricing_model === "free" ? "Free" : "Paid"}</Badge>
-        <Badge>{course.level}</Badge>
-        <Badge>{course.course_type}</Badge>
+    <>
+      <SiteHeader />
+      <div className="bg-dot-grid">
+        <div className="mx-auto max-w-3xl px-4 pb-6 pt-14 sm:px-6">
+          <div className="mb-3 flex flex-wrap items-center gap-2 animate-fade-in-up">
+            <Badge tone={course.pricing_model === "free" ? "success" : "primary"}>{course.pricing_model === "free" ? "Free" : "Paid"}</Badge>
+            <Badge>{course.level.replace(/_/g, " ")}</Badge>
+            <Badge>{course.course_type.replace(/_/g, " ")}</Badge>
+          </div>
+          <h1 className="text-3xl font-semibold tracking-tight animate-fade-in-up sm:text-4xl" style={{ animationDelay: "60ms" }}>
+            {course.title}
+          </h1>
+          {course.subtitle && (
+            <p className="mt-3 text-lg text-muted animate-fade-in-up" style={{ animationDelay: "120ms" }}>
+              {course.subtitle}
+            </p>
+          )}
+          {coach && (
+            <p className="mt-3 text-sm text-muted animate-fade-in-up" style={{ animationDelay: "160ms" }}>
+              Taught by <span className="font-medium text-foreground">{coach.profiles?.display_name ?? coach.slug}</span>
+            </p>
+          )}
+        </div>
       </div>
-      <h1 className="text-3xl font-semibold">{course.title}</h1>
-      {course.subtitle && <p className="mt-2 text-lg text-muted">{course.subtitle}</p>}
-      {coach && <p className="mt-2 text-sm text-muted">Taught by {coach.profiles?.display_name ?? coach.slug}</p>}
 
-      <div className="mt-6">
-        <EnrollButton courseId={course.id} courseHref={`/learn/course/${course.id}`} />
-      </div>
+      <div className="mx-auto grid max-w-3xl grid-cols-1 gap-8 px-4 pb-24 sm:px-6 lg:max-w-5xl lg:grid-cols-[1fr_320px]">
+        <div>
+          {course.description && <p className="whitespace-pre-line text-sm leading-relaxed text-foreground">{course.description}</p>}
 
-      {course.description && <p className="mt-8 whitespace-pre-line text-sm text-foreground">{course.description}</p>}
+          <h2 className="mb-4 mt-10 text-lg font-semibold">Curriculum</h2>
+          <p className="mb-4 -mt-2 text-xs text-muted">
+            {modules?.length ?? 0} modules &middot; {lessonCount} lessons
+          </p>
+          <div className="space-y-3">
+            {(modules ?? []).map((m, i) => (
+              <Card key={m.id} hoverable className="animate-fade-in-up" style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}>
+                <h3 className="font-medium">{m.title}</h3>
+                <ul className="mt-3 space-y-2 text-sm text-muted">
+                  {(m.lessons ?? []).map((l) => (
+                    <li key={l.id} className="flex items-center gap-2">
+                      <span aria-hidden>{lessonTypeIcon[l.lesson_type] ?? "•"}</span>
+                      <span>{l.title}</span>
+                      {!l.is_required && <span className="text-xs text-muted">(optional)</span>}
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            ))}
+          </div>
+        </div>
 
-      <h2 className="mb-4 mt-10 text-lg font-semibold">Curriculum</h2>
-      <div className="space-y-3">
-        {(modules ?? []).map((m) => (
-          <Card key={m.id}>
-            <h3 className="font-medium">{m.title}</h3>
-            <ul className="mt-2 space-y-1 text-sm text-muted">
-              {(m.lessons ?? []).map((l) => (
-                <li key={l.id}>
-                  {l.title} <span className="text-xs">({l.lesson_type}{l.is_required ? "" : ", optional"})</span>
-                </li>
-              ))}
-            </ul>
+        <div className="lg:sticky lg:top-24 lg:self-start">
+          <Card className="animate-scale-in">
+            <p className="text-2xl font-semibold">{course.pricing_model === "free" ? "Free" : "Paid"}</p>
+            <p className="mb-4 text-sm text-muted">Lifetime access to this course.</p>
+            <EnrollButton courseId={course.id} courseHref={`/learn/course/${course.id}`} />
           </Card>
-        ))}
+        </div>
       </div>
-    </main>
+      <SiteFooter />
+    </>
   );
 }

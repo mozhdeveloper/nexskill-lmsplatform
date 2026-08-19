@@ -60,7 +60,7 @@ export function ProgressionRuleForm({
           ))}
         </select>
       )}
-      <Button type="button" variant="ghost" onClick={handleSave} disabled={loading} className="text-xs">
+      <Button type="button" variant="ghost" size="sm" onClick={handleSave} loading={loading} className="text-xs">
         {loading ? "Saving..." : "Save"}
       </Button>
       {error && <span className="text-error">{error}</span>}

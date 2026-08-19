@@ -104,7 +104,7 @@ export function AddLessonForm({ courseId, moduleId }: { courseId: string; module
       )}
       {error && <p className="text-sm text-error">{error}</p>}
       <div className="flex gap-2">
-        <Button type="submit" disabled={loading} variant="secondary">
+        <Button type="submit" loading={loading} variant="secondary">
           {loading ? "Saving..." : "Save lesson"}
         </Button>
         <Button type="button" variant="ghost" onClick={() => setOpen(false)}>

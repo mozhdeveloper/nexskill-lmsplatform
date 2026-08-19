@@ -6,8 +6,8 @@ export function Badge({ tone = "neutral", children }: { tone?: Tone; children: R
   return (
     <span
       className={clsx(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-        tone === "neutral" && "bg-surface-raised text-muted border border-border",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors duration-200",
+        tone === "neutral" && "border border-border bg-surface-raised text-muted",
         tone === "success" && "bg-success/10 text-success",
         tone === "warning" && "bg-warning/10 text-warning",
         tone === "error" && "bg-error/10 text-error",

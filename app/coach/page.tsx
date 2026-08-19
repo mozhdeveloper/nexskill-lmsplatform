@@ -23,7 +23,7 @@ export default async function CoachDashboardPage() {
     : { count: 0 };
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-12">
+    <div className="mx-auto max-w-4xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Coach dashboard</h1>
 
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -49,6 +49,6 @@ export default async function CoachDashboardPage() {
           Manage courses →
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

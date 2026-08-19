@@ -37,14 +37,24 @@ export function ReviewDecisionForm({ submissionId }: { submissionId: string }) {
       </div>
       {error && <p className="text-sm text-error">{error}</p>}
       <div className="flex flex-wrap gap-2">
-        <Button onClick={() => decide("pass")} disabled={loading !== null}>
-          {loading === "pass" ? "Saving..." : "Pass"}
+        <Button onClick={() => decide("pass")} disabled={loading !== null && loading !== "pass"} loading={loading === "pass"}>
+          Pass
         </Button>
-        <Button variant="secondary" onClick={() => decide("request-revision")} disabled={loading !== null}>
-          {loading === "request-revision" ? "Saving..." : "Request revision"}
+        <Button
+          variant="secondary"
+          onClick={() => decide("request-revision")}
+          disabled={loading !== null && loading !== "request-revision"}
+          loading={loading === "request-revision"}
+        >
+          Request revision
         </Button>
-        <Button variant="danger" onClick={() => decide("fail")} disabled={loading !== null}>
-          {loading === "fail" ? "Saving..." : "Fail"}
+        <Button
+          variant="danger"
+          onClick={() => decide("fail")}
+          disabled={loading !== null && loading !== "fail"}
+          loading={loading === "fail"}
+        >
+          Fail
         </Button>
       </div>
     </div>

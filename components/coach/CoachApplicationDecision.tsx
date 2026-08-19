@@ -58,11 +58,16 @@ export function CoachApplicationDecision({ applicationId }: { applicationId: str
       </div>
       {error && <p className="text-sm text-error">{error}</p>}
       <div className="flex gap-2">
-        <Button onClick={approve} disabled={loading !== null}>
-          {loading === "approve" ? "Approving..." : "Approve"}
+        <Button onClick={approve} disabled={loading !== null && loading !== "approve"} loading={loading === "approve"}>
+          Approve
         </Button>
-        <Button variant="danger" onClick={reject} disabled={loading !== null}>
-          {loading === "reject" ? "Rejecting..." : "Reject"}
+        <Button
+          variant="danger"
+          onClick={reject}
+          disabled={loading !== null && loading !== "reject"}
+          loading={loading === "reject"}
+        >
+          Reject
         </Button>
       </div>
     </div>

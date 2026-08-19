@@ -9,40 +9,167 @@
   --ns-border: 228 228 224;
   --ns-foreground: 24 24 27;
   --ns-muted: 113 113 122;
-  --ns-primary: 23 37 84;
+  --ns-primary: 79 70 229;
+  --ns-primary-hover: 67 56 202;
   --ns-primary-foreground: 255 255 255;
-  --ns-secondary: 20 184 166;
+  --ns-secondary: 13 148 136;
+  --ns-accent: 236 72 153;
   --ns-success: 22 163 74;
   --ns-warning: 202 138 4;
   --ns-error: 220 38 38;
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ns-ring: 79 70 229;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ns-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root[data-theme="dark"] {
-  --ns-background: 15 15 17;
-  --ns-surface: 24 24 27;
-  --ns-surface-raised: 32 32 36;
-  --ns-border: 45 45 50;
+  --ns-background: 10 10 12;
+  --ns-surface: 20 20 24;
+  --ns-surface-raised: 27 27 32;
+  --ns-border: 41 41 48;
   --ns-foreground: 244 244 245;
   --ns-muted: 161 161 170;
-  --ns-primary: 129 140 248;
-  --ns-primary-foreground: 15 15 17;
+  --ns-primary: 139 132 255;
+  --ns-primary-hover: 165 160 255;
+  --ns-primary-foreground: 12 10 30;
+  --ns-secondary: 45 212 191;
+  --ns-accent: 244 114 182;
+  --ns-ring: 139 132 255;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --ns-background: 15 15 17;
-    --ns-surface: 24 24 27;
-    --ns-surface-raised: 32 32 36;
-    --ns-border: 45 45 50;
+    --ns-background: 10 10 12;
+    --ns-surface: 20 20 24;
+    --ns-surface-raised: 27 27 32;
+    --ns-border: 41 41 48;
     --ns-foreground: 244 244 245;
     --ns-muted: 161 161 170;
-    --ns-primary: 129 140 248;
-    --ns-primary-foreground: 15 15 17;
+    --ns-primary: 139 132 255;
+    --ns-primary-hover: 165 160 255;
+    --ns-primary-foreground: 12 10 30;
+    --ns-secondary: 45 212 191;
+    --ns-accent: 244 114 182;
+    --ns-ring: 139 132 255;
   }
+}
+
+* {
+  border-color: rgb(var(--ns-border));
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: rgb(var(--ns-background));
   color: rgb(var(--ns-foreground));
+  transition: background-color 0.3s var(--ns-ease), color 0.3s var(--ns-ease);
+}
+
+::selection {
+  background-color: rgb(var(--ns-primary) / 0.25);
+}
+
+/* Soft focus ring used everywhere instead of the browser default outline. */
+:focus-visible {
+  outline: 2px solid rgb(var(--ns-ring));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Subtle dotted backdrop for hero / empty-state sections. */
+.bg-dot-grid {
+  background-image: radial-gradient(rgb(var(--ns-border)) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-hero-glow {
+  background:
+    radial-gradient(600px circle at 15% -10%, rgb(var(--ns-primary) / 0.16), transparent 60%),
+    radial-gradient(500px circle at 90% 10%, rgb(var(--ns-accent) / 0.12), transparent 55%);
+}
+
+.text-gradient {
+  background: linear-gradient(120deg, rgb(var(--ns-primary)), rgb(var(--ns-accent)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- Motion keyframes shared across the app ---- */
+@keyframes ns-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ns-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ns-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ns-shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.animate-fade-in-up {
+  animation: ns-fade-in-up 0.6s var(--ns-ease) both;
+}
+.animate-fade-in {
+  animation: ns-fade-in 0.5s var(--ns-ease) both;
+}
+.animate-scale-in {
+  animation: ns-scale-in 0.35s var(--ns-ease) both;
+}
+
+.skeleton {
+  background: linear-gradient(
+    100deg,
+    rgb(var(--ns-surface-raised)) 40%,
+    rgb(var(--ns-border)) 50%,
+    rgb(var(--ns-surface-raised)) 60%
+  );
+  background-size: 200% 100%;
+  animation: ns-shimmer 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -30,7 +30,7 @@ export function RevokeCertificateButton({ certificateId }: { certificateId: stri
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="danger" onClick={handleClick} disabled={loading}>
+      <Button variant="danger" onClick={handleClick} loading={loading}>
         {loading ? "Revoking..." : "Revoke"}
       </Button>
       {error && <span className="text-xs text-error">{error}</span>}

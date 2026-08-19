@@ -23,7 +23,7 @@ export default async function AdminOverviewPage() {
     .eq("status", "submitted_for_review");
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Admin</h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link href="/admin/coaches">
@@ -49,6 +49,6 @@ export default async function AdminOverviewPage() {
           </Card>
         </Link>
       </div>
-    </main>
+    </div>
   );
 }

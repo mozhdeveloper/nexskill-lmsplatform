@@ -6,7 +6,7 @@ import Link from "next/link";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
-import { Card } from "@/components/ui/Card";
+import { AuthBrandPanel } from "@/components/marketing/AuthBrandPanel";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -41,36 +41,48 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-4">
-      <Card>
-        <h1 className="mb-1 text-xl font-semibold">Create your Nexskill account</h1>
-        <p className="mb-6 text-sm text-muted">Every new account starts as a Student — you can apply to become a coach any time.</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Label>Display name</Label>
-            <Input required value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
-          </div>
-          <div>
-            <Label>Email</Label>
-            <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div>
-            <Label>Password</Label>
-            <Input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
-          </div>
-          {error && <p className="text-sm text-error">{error}</p>}
-          {notice && <p className="text-sm text-success">{notice}</p>}
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Creating account..." : "Create account"}
-          </Button>
-        </form>
-        <p className="mt-4 text-sm text-muted">
-          Already have an account?{" "}
-          <Link href="/login" className="text-primary underline">
-            Sign in
+    <main className="flex min-h-screen">
+      <AuthBrandPanel />
+      <div className="flex flex-1 items-center justify-center bg-dot-grid px-4 py-12">
+        <div className="w-full max-w-sm animate-fade-in-up">
+          <Link href="/" className="mb-8 flex items-center gap-2 text-lg font-semibold lg:hidden">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-sm font-bold text-white shadow-soft">
+              N
+            </span>
+            NexSkill
           </Link>
-        </p>
-      </Card>
+
+          <h1 className="mb-1 text-2xl font-semibold tracking-tight">Create your account</h1>
+          <p className="mb-6 text-sm text-muted">Every new account starts as a Student — you can apply to become a coach any time.</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label>Display name</Label>
+              <Input required value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            </div>
+            <div>
+              <Label>Password</Label>
+              <Input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} />
+            </div>
+            {error && <p className="text-sm text-error">{error}</p>}
+            {notice && <p className="text-sm text-success">{notice}</p>}
+            <Button type="submit" loading={loading} className="w-full">
+              Create account
+            </Button>
+          </form>
+
+          <p className="mt-4 text-sm text-muted">
+            Already have an account?{" "}
+            <Link href="/login" className="font-medium text-primary hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </div>
+      </div>
     </main>
   );
 }

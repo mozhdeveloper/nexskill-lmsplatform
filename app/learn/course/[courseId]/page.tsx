@@ -20,9 +20,9 @@ export default async function ClassroomPage({ params }: { params: { courseId: st
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-[calc(100vh-57px)]">
       <CurriculumSidebar state={state} />
-      <main className="flex-1 p-8">
+      <div className="flex-1 p-8">
         <Card>
           {state.enrollmentStatus === "completed" ? (
             <>
@@ -34,7 +34,7 @@ export default async function ClassroomPage({ params }: { params: { courseId: st
             <p className="text-sm text-muted">All currently unlocked lessons are complete. Waiting on instructor review to unlock more.</p>
           )}
         </Card>
-      </main>
+      </div>
     </div>
   );
 }

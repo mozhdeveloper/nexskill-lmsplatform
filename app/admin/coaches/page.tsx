@@ -19,7 +19,7 @@ export default async function AdminCoachApplicationsPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-8 text-2xl font-semibold">Coach applications</h1>
       <div className="space-y-2">
         {(applications ?? []).map((a) => (
@@ -41,6 +41,6 @@ export default async function AdminCoachApplicationsPage() {
           </Card>
         )}
       </div>
-    </main>
+    </div>
   );
 }

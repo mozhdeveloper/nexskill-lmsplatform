@@ -33,7 +33,7 @@ export default async function CoachCoursesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <main className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto max-w-3xl px-4 py-12">
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-2xl font-semibold">Your courses</h1>
         <Link href="/coach/courses/new">
@@ -56,6 +56,6 @@ export default async function CoachCoursesPage() {
           </Card>
         )}
       </div>
-    </main>
+    </div>
   );
 }
