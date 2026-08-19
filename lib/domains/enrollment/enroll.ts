@@ -1,5 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import {
   ForbiddenError,
   InvalidStateTransitionError,
@@ -15,7 +14,7 @@ import { writeAuditLog } from "@/lib/domains/system/audit";
  * can be self-enrolled; a paid course in P0 has no working checkout, so it's rejected with a
  * clear error rather than silently granting access (§73: never fake a feature as working).
  */
-export async function enrollStudent(supabase: SupabaseClient<Database>, studentId: string, courseId: string) {
+export async function enrollStudent(supabase: TypedSupabaseClient, studentId: string, courseId: string) {
   const { data: course, error: courseError } = await supabase
     .from("courses")
     .select("id, status, pricing_model, published_version_id, access_duration_days")
@@ -61,7 +60,7 @@ export async function enrollStudent(supabase: SupabaseClient<Database>, studentI
 
 /** Admin/coach grants free access without the student going through self-enroll (§42 enrollment_source='admin_grant'). */
 export async function adminGrantEnrollment(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   actorId: string,
   studentId: string,
   courseId: string
@@ -110,7 +109,7 @@ export async function adminGrantEnrollment(
  * lesson's module is actually unlocked — a student cannot complete a locked lesson by hitting
  * the API directly with its ID (§102).
  */
-export async function completeLesson(supabase: SupabaseClient<Database>, studentId: string, lessonId: string) {
+export async function completeLesson(supabase: TypedSupabaseClient, studentId: string, lessonId: string) {
   const { data: lesson, error: lessonError } = await supabase
     .from("lessons")
     .select("id, module_id, lesson_type")

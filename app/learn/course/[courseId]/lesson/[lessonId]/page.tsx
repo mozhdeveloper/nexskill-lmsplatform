@@ -32,8 +32,8 @@ export default async function LessonPage({ params }: { params: { courseId: strin
   }
 
   const state = await getClassroomState(supabase, user.id, params.courseId);
-  const module = state.modules.find((m) => m.lessons.some((l) => l.id === params.lessonId));
-  const lesson = module?.lessons.find((l) => l.id === params.lessonId);
+  const courseModule = state.modules.find((m) => m.lessons.some((l) => l.id === params.lessonId));
+  const lesson = courseModule?.lessons.find((l) => l.id === params.lessonId);
   if (!lesson) redirect(`/learn/course/${params.courseId}`);
 
   let assignmentBlock: React.ReactNode = null;

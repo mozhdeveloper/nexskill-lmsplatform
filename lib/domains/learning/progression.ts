@@ -31,7 +31,14 @@ export async function recomputeProgress(enrollmentId: string): Promise<void> {
     .from("course_modules")
     .select("id, position, lessons(id, is_required, assignment_id, lesson_type)")
     .eq("course_id", enrollment.course_id)
-    .order("position");
+    .order("position")
+    .returns<
+      Array<{
+        id: string;
+        position: number;
+        lessons: { id: string; is_required: boolean; assignment_id: string | null; lesson_type: string }[];
+      }>
+    >();
   const orderedModules = modules ?? [];
 
   const { data: rules } = await supabase

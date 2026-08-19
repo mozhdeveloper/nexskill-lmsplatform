@@ -17,7 +17,17 @@ export default async function AdminCertificatesPage() {
     .from("certificates")
     .select("id, certificate_number, status, issued_at, courses(title), profiles!student_id(display_name)")
     .order("issued_at", { ascending: false })
-    .limit(50);
+    .limit(50)
+    .returns<
+      Array<{
+        id: string;
+        certificate_number: string;
+        status: string;
+        issued_at: string;
+        courses: { title: string } | null;
+        profiles: { display_name: string } | null;
+      }>
+    >();
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">

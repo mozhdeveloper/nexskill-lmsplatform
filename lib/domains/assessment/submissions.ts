@@ -1,6 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import type { Database } from "@/types/database";
 import {
   ForbiddenError,
   InvalidStateTransitionError,
@@ -10,7 +8,7 @@ import {
 } from "@/lib/domains/identity/permissions";
 import { recomputeProgress } from "@/lib/domains/learning/progression";
 import { writeAuditLog } from "@/lib/domains/system/audit";
-import { createSupabaseServiceRoleClient } from "@/lib/supabase/server";
+import { createSupabaseServiceRoleClient, type TypedSupabaseClient } from "@/lib/supabase/server";
 
 const createSubmissionSchema = z.object({
   files: z
@@ -29,7 +27,7 @@ const createSubmissionSchema = z.object({
  * and for audit purposes (§13).
  */
 export async function createSubmission(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   studentId: string,
   assignmentId: string,
   input: z.infer<typeof createSubmissionSchema>
@@ -113,7 +111,7 @@ export async function createSubmission(
   return submission;
 }
 
-async function loadSubmissionForReview(supabase: SupabaseClient<Database>, reviewerId: string, submissionId: string) {
+async function loadSubmissionForReview(supabase: TypedSupabaseClient, reviewerId: string, submissionId: string) {
   const { data: submission, error } = await supabase.from("submissions").select("*").eq("id", submissionId).single();
   if (error || !submission) throw new NotFoundError("Submission not found.");
 
@@ -138,7 +136,7 @@ const decisionSchema = z.object({
 
 /** Coach/sub-coach requests revision. Original submission is preserved; student creates a new attempt to respond. */
 export async function requestRevision(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   reviewerId: string,
   submissionId: string,
   input: z.infer<typeof decisionSchema>
@@ -176,7 +174,7 @@ export async function requestRevision(
 
 /** Coach/sub-coach passes the submission — auto-completes the linked lesson (if any) and recomputes progression/course unlock. */
 export async function passSubmission(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   reviewerId: string,
   submissionId: string,
   input: z.infer<typeof decisionSchema>
@@ -231,7 +229,7 @@ export async function passSubmission(
 }
 
 export async function failSubmission(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   reviewerId: string,
   submissionId: string,
   input: z.infer<typeof decisionSchema>
@@ -268,7 +266,7 @@ export async function failSubmission(
 }
 
 /** Review queue: everything awaiting this reviewer's attention across courses they can review. */
-export async function getReviewQueue(supabase: SupabaseClient<Database>, reviewerId: string) {
+export async function getReviewQueue(supabase: TypedSupabaseClient, reviewerId: string) {
   // Courses the reviewer owns directly.
   const { data: ownedCourses } = await supabase
     .from("courses")
@@ -316,7 +314,7 @@ export async function getReviewQueue(supabase: SupabaseClient<Database>, reviewe
  * only to mint the short-lived signed URLs. The permission check, not the storage grant, is
  * what's doing the authorization work here.
  */
-export async function getSubmissionForReview(supabase: SupabaseClient<Database>, actorId: string, submissionId: string) {
+export async function getSubmissionForReview(supabase: TypedSupabaseClient, actorId: string, submissionId: string) {
   const { data: submission, error } = await supabase.from("submissions").select("*").eq("id", submissionId).single();
   if (error || !submission) throw new NotFoundError("Submission not found.");
 

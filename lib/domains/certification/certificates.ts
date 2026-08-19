@@ -1,6 +1,5 @@
 import { createHash, randomBytes } from "crypto";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import { InvalidStateTransitionError, NotFoundError, ValidationError } from "@/lib/domains/identity/permissions";
 import { writeAuditLog } from "@/lib/domains/system/audit";
 import { anchorCertificate } from "@/lib/integrations/certificate-anchor";
@@ -22,7 +21,7 @@ function buildCertificateNumber(categorySlug: string): string {
  * This function must only ever be invoked with a service-role/admin-privileged client, since
  * the certificates table has no student-facing insert policy (see migration 0005).
  */
-export async function issueCertificateIfEligible(supabase: SupabaseClient<Database>, enrollmentId: string) {
+export async function issueCertificateIfEligible(supabase: TypedSupabaseClient, enrollmentId: string) {
   const { data: enrollment, error: enrollmentError } = await supabase
     .from("enrollments")
     .select("id, student_id, course_id, status")
@@ -99,7 +98,7 @@ export async function issueCertificateIfEligible(supabase: SupabaseClient<Databa
 }
 
 export async function revokeCertificate(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   adminId: string,
   certificateId: string,
   reason: string
@@ -131,7 +130,7 @@ export async function revokeCertificate(
 }
 
 /** Public verification (§34, §104). Returns only non-sensitive fields — never legal name, email, payment info. */
-export async function getPublicCertificate(supabase: SupabaseClient<Database>, certificateNumber: string) {
+export async function getPublicCertificate(supabase: TypedSupabaseClient, certificateNumber: string) {
   const { data: certificate, error } = await supabase
     .from("certificates")
     .select(

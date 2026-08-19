@@ -1,6 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import type { Database } from "@/types/database";
 import {
   ForbiddenError,
   InvalidStateTransitionError,
@@ -31,7 +30,7 @@ const createCourseSchema = z.object({
 
 /** Coach creates a draft course under their own coach_profile (§10). */
 export async function createCourse(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   input: z.infer<typeof createCourseSchema>
 ) {
@@ -78,7 +77,7 @@ export async function createCourse(
 const addModuleSchema = z.object({ title: z.string().min(2).max(140), description: z.string().max(2000).optional() });
 
 export async function addModule(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   courseId: string,
   input: z.infer<typeof addModuleSchema>
@@ -131,7 +130,7 @@ const addLessonSchema = z.object({
 });
 
 export async function addLesson(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   moduleId: string,
   input: z.infer<typeof addLessonSchema>
@@ -174,7 +173,7 @@ const setProgressionRuleSchema = z.object({
 });
 
 export async function setProgressionRule(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   courseId: string,
   input: z.infer<typeof setProgressionRuleSchema>
@@ -205,7 +204,7 @@ export async function setProgressionRule(
 }
 
 /** draft/rejected -> submitted_for_review, or auto-publish if platform_settings allows it (§7 roadmap). */
-export async function submitCourseForReview(supabase: SupabaseClient<Database>, userId: string, courseId: string) {
+export async function submitCourseForReview(supabase: TypedSupabaseClient, userId: string, courseId: string) {
   if (!(await hasCoursePermission(supabase, userId, courseId, "course.publish"))) {
     throw new ForbiddenError("You cannot publish this course.");
   }
@@ -244,7 +243,7 @@ export async function submitCourseForReview(supabase: SupabaseClient<Database>, 
 }
 
 /** approved -> published. Snapshots the curriculum into course_versions (§88). */
-export async function publishCourse(supabase: SupabaseClient<Database>, userId: string, courseId: string) {
+export async function publishCourse(supabase: TypedSupabaseClient, userId: string, courseId: string) {
   if (!(await hasCoursePermission(supabase, userId, courseId, "course.publish"))) {
     throw new ForbiddenError("You cannot publish this course.");
   }
@@ -298,7 +297,7 @@ export async function publishCourse(supabase: SupabaseClient<Database>, userId: 
 }
 
 /** published -> unpublished. New purchases/enrollments stop; existing learners keep access per policy (§89). */
-export async function unpublishCourse(supabase: SupabaseClient<Database>, userId: string, courseId: string) {
+export async function unpublishCourse(supabase: TypedSupabaseClient, userId: string, courseId: string) {
   const allowed =
     (await hasCoursePermission(supabase, userId, courseId, "course.publish")) ||
     (await hasCoursePermission(supabase, userId, courseId, "course.unpublish"));

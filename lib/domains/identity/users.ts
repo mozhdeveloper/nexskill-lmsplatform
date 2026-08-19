@@ -1,10 +1,9 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import { ForbiddenError, InvalidStateTransitionError, NotFoundError, hasPermission } from "@/lib/domains/identity/permissions";
 import { writeAuditLog } from "@/lib/domains/system/audit";
 
 /** Admin/support suspends a user account (§7, §68: suspended user must lose access immediately). */
-export async function suspendUser(supabase: SupabaseClient<Database>, actorId: string, targetUserId: string) {
+export async function suspendUser(supabase: TypedSupabaseClient, actorId: string, targetUserId: string) {
   if (!(await hasPermission(supabase, actorId, "user.suspend"))) {
     throw new ForbiddenError("You cannot suspend user accounts.");
   }
@@ -26,7 +25,7 @@ export async function suspendUser(supabase: SupabaseClient<Database>, actorId: s
   return data;
 }
 
-export async function reinstateUser(supabase: SupabaseClient<Database>, actorId: string, targetUserId: string) {
+export async function reinstateUser(supabase: TypedSupabaseClient, actorId: string, targetUserId: string) {
   if (!(await hasPermission(supabase, actorId, "user.suspend"))) {
     throw new ForbiddenError("You cannot reinstate user accounts.");
   }

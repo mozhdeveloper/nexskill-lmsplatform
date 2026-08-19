@@ -1,6 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import type { Database } from "@/types/database";
 import {
   ForbiddenError,
   InvalidStateTransitionError,
@@ -27,7 +26,7 @@ export type SubmitApplicationInput = z.infer<typeof submitApplicationSchema>;
 
 /** Student submits (or re-submits) a coach application (§8). */
 export async function submitCoachApplication(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   applicantId: string,
   input: SubmitApplicationInput
 ) {
@@ -98,7 +97,7 @@ function slugify(input: string): string {
  * becomes available").
  */
 export async function approveCoachApplication(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   adminId: string,
   applicationId: string,
   reviewNotes?: string
@@ -167,7 +166,7 @@ export async function approveCoachApplication(
 }
 
 export async function rejectCoachApplication(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   adminId: string,
   applicationId: string,
   reviewNotes: string

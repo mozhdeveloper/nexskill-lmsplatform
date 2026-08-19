@@ -30,7 +30,17 @@ export default async function CourseSalesPage({ params }: { params: { slug: stri
     .from("courses")
     .select("id, title, subtitle, description, level, pricing_model, course_type, status, coach_profiles(slug, headline, profiles(display_name))")
     .eq("slug", params.slug)
-    .maybeSingle();
+    .maybeSingle<{
+      id: string;
+      title: string;
+      subtitle: string | null;
+      description: string | null;
+      level: string;
+      pricing_model: string;
+      course_type: string;
+      status: string;
+      coach_profiles: { slug: string; headline: string | null; profiles: { display_name: string } | null } | null;
+    }>();
 
   if (!course || course.status !== "published") notFound();
 
@@ -38,7 +48,8 @@ export default async function CourseSalesPage({ params }: { params: { slug: stri
     .from("course_modules")
     .select("id, title, lessons(id, title, lesson_type, is_required)")
     .eq("course_id", course.id)
-    .order("position");
+    .order("position")
+    .returns<Array<{ id: string; title: string; lessons: { id: string; title: string; lesson_type: string; is_required: boolean }[] }>>();
 
   const coach = (course as unknown as { coach_profiles: { slug: string; headline: string | null; profiles: { display_name: string } | null } | null })
     .coach_profiles;

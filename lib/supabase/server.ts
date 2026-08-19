@@ -3,6 +3,16 @@ import { createServerClient } from "@supabase/ssr";
 import type { Database } from "@/types/database";
 
 /**
+ * The type actually returned by createServerClient<Database>() from @supabase/ssr, which
+ * resolves its generics differently than a bare `SupabaseClient<Database>` annotation from
+ * @supabase/supabase-js — using the latter in domain function signatures fails `next build`'s
+ * strict type-check (dev mode's looser checking doesn't catch it) even though the values are
+ * the same shape at runtime. Domain modules should type their `supabase` parameter as this,
+ * not `SupabaseClient<Database>`.
+ */
+export type TypedSupabaseClient = ReturnType<typeof createServerClient<Database>>;
+
+/**
  * Server-side Supabase client bound to the current request's cookies.
  * Use in Server Components, Route Handlers, and Server Actions.
  * Respects RLS as the authenticated user — this is the client every

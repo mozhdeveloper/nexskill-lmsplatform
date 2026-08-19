@@ -21,7 +21,15 @@ export default async function CourseBuilderPage({ params }: { params: { id: stri
     .from("course_modules")
     .select("id, title, position, lessons(id, title, lesson_type, position)")
     .eq("course_id", params.id)
-    .order("position");
+    .order("position")
+    .returns<
+      Array<{
+        id: string;
+        title: string;
+        position: number;
+        lessons: { id: string; title: string; lesson_type: string; position: number }[];
+      }>
+    >();
 
   const { data: rules } = await supabase.from("progression_rules").select("target_id, rule_type").eq("course_id", params.id).eq("target_type", "module");
   const ruleByModuleId = new Map((rules ?? []).map((r) => [r.target_id, r.rule_type]));

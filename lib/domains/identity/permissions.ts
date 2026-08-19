@@ -1,5 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 
 /**
  * Thin TypeScript mirror of the SQL permission functions defined in
@@ -12,7 +11,7 @@ import type { Database } from "@/types/database";
  */
 
 export async function getCurrentProfileId(
-  supabase: SupabaseClient<Database>
+  supabase: TypedSupabaseClient
 ): Promise<string | null> {
   const {
     data: { user },
@@ -21,7 +20,7 @@ export async function getCurrentProfileId(
 }
 
 export async function hasPermission(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   permissionKey: string
 ): Promise<boolean> {
@@ -34,7 +33,7 @@ export async function hasPermission(
 }
 
 export async function hasCoursePermission(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   courseId: string,
   permissionKey: string
@@ -48,7 +47,7 @@ export async function hasCoursePermission(
   return Boolean(data);
 }
 
-export async function isAdmin(supabase: SupabaseClient<Database>, userId: string): Promise<boolean> {
+export async function isAdmin(supabase: TypedSupabaseClient, userId: string): Promise<boolean> {
   const { data, error } = await supabase.rpc("is_admin", { p_user_id: userId });
   if (error) throw error;
   return Boolean(data);

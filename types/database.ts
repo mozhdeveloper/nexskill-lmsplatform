@@ -72,21 +72,25 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & { id: string; display_name: string };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
+        Relationships: [];
       };
       roles: {
         Row: { id: string; key: string; label: string };
         Insert: { id?: string; key: string; label: string };
         Update: Partial<{ key: string; label: string }>;
+        Relationships: [];
       };
       permissions: {
         Row: { id: string; key: string; description: string; category: string };
         Insert: { id?: string; key: string; description: string; category: string };
         Update: Partial<{ key: string; description: string; category: string }>;
+        Relationships: [];
       };
       user_roles: {
         Row: { user_id: string; role_id: string; created_at: string };
         Insert: { user_id: string; role_id: string };
         Update: never;
+        Relationships: [];
       };
       coach_applications: {
         Row: {
@@ -117,6 +121,7 @@ export interface Database {
           bio: string;
         };
         Update: Partial<Database["public"]["Tables"]["coach_applications"]["Row"]>;
+        Relationships: [];
       };
       coach_profiles: {
         Row: {
@@ -133,6 +138,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["coach_profiles"]["Row"]> & { user_id: string; slug: string };
         Update: Partial<Database["public"]["Tables"]["coach_profiles"]["Row"]>;
+        Relationships: [];
       };
       coach_team_members: {
         Row: {
@@ -152,11 +158,13 @@ export interface Database {
           scope_type: "account" | "course" | "cohort" | "module" | "student_group";
         };
         Update: Partial<Database["public"]["Tables"]["coach_team_members"]["Row"]>;
+        Relationships: [];
       };
       categories: {
         Row: { id: string; name: string; slug: string; parent_id: string | null };
         Insert: { id?: string; name: string; slug: string; parent_id?: string | null };
         Update: Partial<{ name: string; slug: string; parent_id: string | null }>;
+        Relationships: [];
       };
       courses: {
         Row: {
@@ -186,16 +194,19 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["courses"]["Row"]> & { coach_profile_id: string; title: string; slug: string };
         Update: Partial<Database["public"]["Tables"]["courses"]["Row"]>;
+        Relationships: [];
       };
       course_versions: {
         Row: { id: string; course_id: string; version_number: number; snapshot: unknown; published_at: string; created_by: string | null };
         Insert: { id?: string; course_id: string; version_number: number; snapshot: unknown; created_by?: string | null };
         Update: never;
+        Relationships: [];
       };
       course_modules: {
         Row: { id: string; course_id: string; title: string; description: string | null; position: number; created_at: string };
         Insert: Partial<Database["public"]["Tables"]["course_modules"]["Row"]> & { course_id: string; title: string };
         Update: Partial<Database["public"]["Tables"]["course_modules"]["Row"]>;
+        Relationships: [];
       };
       lessons: {
         Row: {
@@ -212,6 +223,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["lessons"]["Row"]> & { module_id: string; title: string; lesson_type: LessonType };
         Update: Partial<Database["public"]["Tables"]["lessons"]["Row"]>;
+        Relationships: [];
       };
       progression_rules: {
         Row: {
@@ -230,6 +242,7 @@ export interface Database {
           rule_type: ProgressionRuleType;
         };
         Update: Partial<Database["public"]["Tables"]["progression_rules"]["Row"]>;
+        Relationships: [];
       };
       assignments: {
         Row: {
@@ -249,6 +262,13 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["assignments"]["Row"]> & { course_id: string; title: string; instructions: string };
         Update: Partial<Database["public"]["Tables"]["assignments"]["Row"]>;
+        Relationships: [];
+      };
+      rubric_items: {
+        Row: { id: string; assignment_id: string; label: string; max_points: number; position: number };
+        Insert: { id?: string; assignment_id: string; label: string; max_points: number; position?: number };
+        Update: Partial<{ label: string; max_points: number; position: number }>;
+        Relationships: [];
       };
       enrollments: {
         Row: {
@@ -270,11 +290,13 @@ export interface Database {
           enrollment_source: string;
         };
         Update: Partial<Database["public"]["Tables"]["enrollments"]["Row"]>;
+        Relationships: [];
       };
       lesson_progress: {
         Row: { id: string; enrollment_id: string; lesson_id: string; status: "not_started" | "in_progress" | "completed"; completed_at: string | null };
         Insert: Partial<Database["public"]["Tables"]["lesson_progress"]["Row"]> & { enrollment_id: string; lesson_id: string };
         Update: Partial<Database["public"]["Tables"]["lesson_progress"]["Row"]>;
+        Relationships: [];
       };
       module_progress: {
         Row: {
@@ -287,11 +309,13 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["module_progress"]["Row"]> & { enrollment_id: string; module_id: string };
         Update: Partial<Database["public"]["Tables"]["module_progress"]["Row"]>;
+        Relationships: [];
       };
       course_progress: {
         Row: { id: string; enrollment_id: string; percent: number; completion_rule_snapshot: unknown; completed_at: string | null };
         Insert: Partial<Database["public"]["Tables"]["course_progress"]["Row"]> & { enrollment_id: string; completion_rule_snapshot: unknown };
         Update: Partial<Database["public"]["Tables"]["course_progress"]["Row"]>;
+        Relationships: [];
       };
       submissions: {
         Row: {
@@ -311,11 +335,13 @@ export interface Database {
           student_id: string;
         };
         Update: Partial<Database["public"]["Tables"]["submissions"]["Row"]>;
+        Relationships: [];
       };
       submission_files: {
         Row: { id: string; submission_id: string; media_id: string; submission_type: string };
         Insert: { id?: string; submission_id: string; media_id: string; submission_type: string };
         Update: never;
+        Relationships: [];
       };
       submission_reviews: {
         Row: {
@@ -333,6 +359,7 @@ export interface Database {
           decision: "revision_required" | "passed" | "failed";
         };
         Update: never;
+        Relationships: [];
       };
       certificates: {
         Row: {
@@ -360,6 +387,7 @@ export interface Database {
           payload_hash: string;
         };
         Update: Partial<Database["public"]["Tables"]["certificates"]["Row"]>;
+        Relationships: [];
       };
       certificate_blockchain_records: {
         Row: {
@@ -373,6 +401,7 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["certificate_blockchain_records"]["Row"]> & { certificate_id: string };
         Update: Partial<Database["public"]["Tables"]["certificate_blockchain_records"]["Row"]>;
+        Relationships: [];
       };
       audit_logs: {
         Row: {
@@ -388,11 +417,13 @@ export interface Database {
         };
         Insert: Partial<Database["public"]["Tables"]["audit_logs"]["Row"]> & { action: string; target_type: string };
         Update: never;
+        Relationships: [];
       };
       platform_settings: {
         Row: { id: string; key: string; value: unknown; category: string; is_secret: boolean; updated_at: string };
         Insert: { id?: string; key: string; value: unknown; category: string; is_secret?: boolean };
         Update: Partial<{ value: unknown }>;
+        Relationships: [];
       };
       media_assets: {
         Row: {
@@ -416,6 +447,26 @@ export interface Database {
           storage_path: string;
         };
         Update: Partial<Database["public"]["Tables"]["media_assets"]["Row"]>;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: {
+      has_permission: {
+        Args: { p_user_id: string; p_permission_key: string };
+        Returns: boolean;
+      };
+      has_course_permission: {
+        Args: { p_user_id: string; p_course_id: string; p_permission_key: string };
+        Returns: boolean;
+      };
+      is_admin: {
+        Args: { p_user_id: string };
+        Returns: boolean;
+      };
+      is_active: {
+        Args: { p_user_id: string };
+        Returns: boolean;
       };
     };
   };

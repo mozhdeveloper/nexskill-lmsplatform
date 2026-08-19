@@ -1,9 +1,8 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 
 /** Append-only audit log write (§49). Never throws the caller's transaction off course. */
 export async function writeAuditLog(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   entry: {
     actorId: string | null;
     action: string;

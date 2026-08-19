@@ -1,6 +1,5 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import { z } from "zod";
-import type { Database } from "@/types/database";
 import { ForbiddenError, ValidationError, hasCoursePermission } from "@/lib/domains/identity/permissions";
 
 const createAssignmentSchema = z.object({
@@ -16,7 +15,7 @@ const createAssignmentSchema = z.object({
 
 /** Coach creates a practical assignment for their course (§13). */
 export async function createAssignment(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   userId: string,
   courseId: string,
   input: z.infer<typeof createAssignmentSchema>

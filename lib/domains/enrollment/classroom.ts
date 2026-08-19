@@ -1,5 +1,4 @@
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/types/database";
+import type { TypedSupabaseClient } from "@/lib/supabase/server";
 import { ForbiddenError, NotFoundError } from "@/lib/domains/identity/permissions";
 
 export interface ClassroomLesson {
@@ -31,7 +30,7 @@ export interface ClassroomState {
 
 /** Loads the full curriculum + this student's lock/progress state — the single read model the classroom UI renders from. */
 export async function getClassroomState(
-  supabase: SupabaseClient<Database>,
+  supabase: TypedSupabaseClient,
   studentId: string,
   courseId: string
 ): Promise<ClassroomState> {
@@ -103,7 +102,7 @@ export async function getClassroomState(
  * Server-side gate for opening a single lesson. Called by the lesson page itself so that
  * directly navigating to a locked lesson's URL 404s/403s instead of rendering content (§102).
  */
-export async function assertLessonAccessible(supabase: SupabaseClient<Database>, studentId: string, lessonId: string) {
+export async function assertLessonAccessible(supabase: TypedSupabaseClient, studentId: string, lessonId: string) {
   const { data: lesson } = await supabase.from("lessons").select("id, module_id").eq("id", lessonId).maybeSingle();
   if (!lesson) throw new NotFoundError("Lesson not found.");
 
