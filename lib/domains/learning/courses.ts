@@ -103,6 +103,110 @@ export async function addModule(
   return data;
 }
 
+const updateModuleSchema = z.object({
+  title: z.string().min(2).max(140).optional(),
+  description: z.string().max(2000).nullable().optional(),
+});
+
+/** Coach edits a module's title/description. */
+export async function updateModule(
+  supabase: TypedSupabaseClient,
+  userId: string,
+  moduleId: string,
+  input: z.infer<typeof updateModuleSchema>
+) {
+  const parsed = updateModuleSchema.safeParse(input);
+  if (!parsed.success) throw new ValidationError(parsed.error.issues.map((i) => i.message).join("; "));
+  if (parsed.data.title === undefined && parsed.data.description === undefined) {
+    throw new ValidationError("Nothing to update.");
+  }
+
+  const { data: courseModule } = await supabase.from("course_modules").select("id, course_id").eq("id", moduleId).maybeSingle();
+  if (!courseModule) throw new NotFoundError("Module not found.");
+
+  if (!(await hasCoursePermission(supabase, userId, courseModule.course_id, "course.edit"))) {
+    throw new ForbiddenError("You cannot edit this course.");
+  }
+
+  const update: { title?: string; description?: string | null } = {};
+  if (parsed.data.title !== undefined) update.title = parsed.data.title;
+  if (parsed.data.description !== undefined) update.description = parsed.data.description;
+
+  const { data, error } = await supabase.from("course_modules").update(update).eq("id", moduleId).select().single();
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Coach deletes a module. Blocked if any of its lessons already have recorded student
+ * progress — deleting those would silently erase a real learner's history rather than just
+ * tidying up an in-progress draft. Lessons themselves cascade-delete at the database level
+ * (course_modules -> lessons has ON DELETE CASCADE), so this only needs to guard the case
+ * where deleting would destroy evidence of actual work.
+ */
+export async function deleteModule(supabase: TypedSupabaseClient, userId: string, moduleId: string) {
+  const { data: courseModule } = await supabase.from("course_modules").select("id, course_id").eq("id", moduleId).maybeSingle();
+  if (!courseModule) throw new NotFoundError("Module not found.");
+
+  if (!(await hasCoursePermission(supabase, userId, courseModule.course_id, "course.edit"))) {
+    throw new ForbiddenError("You cannot edit this course.");
+  }
+
+  const { data: lessons } = await supabase.from("lessons").select("id").eq("module_id", moduleId);
+  const lessonIds = (lessons ?? []).map((l) => l.id);
+  if (lessonIds.length > 0) {
+    const { count } = await supabase
+      .from("lesson_progress")
+      .select("id", { count: "exact", head: true })
+      .in("lesson_id", lessonIds);
+    if (count && count > 0) {
+      throw new InvalidStateTransitionError(
+        "This module has student progress recorded against it and can't be deleted. Edit its lessons instead, or unpublish the course first."
+      );
+    }
+  }
+
+  const { error } = await supabase.from("course_modules").delete().eq("id", moduleId);
+  if (error) throw error;
+  return { id: moduleId };
+}
+
+/** Coach nudges a module's position up or down relative to its siblings within the same course. */
+export async function reorderModule(
+  supabase: TypedSupabaseClient,
+  userId: string,
+  moduleId: string,
+  direction: "up" | "down"
+) {
+  const { data: courseModule } = await supabase.from("course_modules").select("id, course_id").eq("id", moduleId).maybeSingle();
+  if (!courseModule) throw new NotFoundError("Module not found.");
+
+  if (!(await hasCoursePermission(supabase, userId, courseModule.course_id, "course.edit"))) {
+    throw new ForbiddenError("You cannot edit this course.");
+  }
+
+  const { data: siblings } = await supabase
+    .from("course_modules")
+    .select("id, position")
+    .eq("course_id", courseModule.course_id)
+    .order("position");
+  const ordered = siblings ?? [];
+  const index = ordered.findIndex((m) => m.id === moduleId);
+  const swapIndex = direction === "up" ? index - 1 : index + 1;
+  if (index === -1 || swapIndex < 0 || swapIndex >= ordered.length) {
+    throw new InvalidStateTransitionError(`Module is already at the ${direction === "up" ? "top" : "bottom"}.`);
+  }
+
+  const current = ordered[index]!;
+  const swapWith = ordered[swapIndex]!;
+  const { error: err1 } = await supabase.from("course_modules").update({ position: swapWith.position }).eq("id", current.id);
+  if (err1) throw err1;
+  const { error: err2 } = await supabase.from("course_modules").update({ position: current.position }).eq("id", swapWith.id);
+  if (err2) throw err2;
+
+  return { id: moduleId };
+}
+
 const addLessonSchema = z.object({
   title: z.string().min(2).max(140),
   lessonType: z.enum([

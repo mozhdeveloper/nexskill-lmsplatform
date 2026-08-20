@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { AddModuleForm } from "@/components/coach/AddModuleForm";
 import { AddLessonForm } from "@/components/coach/AddLessonForm";
+import { ModuleControls } from "@/components/coach/ModuleControls";
 import { ProgressionRuleForm } from "@/components/coach/ProgressionRuleForm";
 import { PublishControls } from "@/components/coach/PublishControls";
 
@@ -19,13 +20,14 @@ export default async function CourseBuilderPage({ params }: { params: { id: stri
 
   const { data: modules } = await supabase
     .from("course_modules")
-    .select("id, title, position, lessons(id, title, lesson_type, position)")
+    .select("id, title, description, position, lessons(id, title, lesson_type, position)")
     .eq("course_id", params.id)
     .order("position")
     .returns<
       Array<{
         id: string;
         title: string;
+        description: string | null;
         position: number;
         lessons: { id: string; title: string; lesson_type: string; position: number }[];
       }>
@@ -45,9 +47,15 @@ export default async function CourseBuilderPage({ params }: { params: { id: stri
       <p className="mb-8 text-sm text-muted">{course.subtitle}</p>
 
       <div className="mb-8 space-y-4">
-        {(modules ?? []).map((m) => (
+        {(modules ?? []).map((m, index) => (
           <Card key={m.id}>
-            <h2 className="font-semibold">{m.title}</h2>
+            <ModuleControls
+              moduleId={m.id}
+              title={m.title}
+              description={m.description}
+              isFirst={index === 0}
+              isLast={index === (modules ?? []).length - 1}
+            />
             <ProgressionRuleForm
               courseId={params.id}
               moduleId={m.id}
