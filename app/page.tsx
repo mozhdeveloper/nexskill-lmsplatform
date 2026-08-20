@@ -7,13 +7,19 @@ import { CourseGrid, type CourseCardData } from "@/components/marketing/CourseGr
 import { CtaBanner } from "@/components/marketing/CtaBanner";
 
 export default async function HomePage() {
-  const supabase = createSupabaseServerClient();
-  const { data: courses } = await supabase
-    .from("courses")
-    .select("id, title, subtitle, slug, level, pricing_model, coach_profiles(slug, headline)")
-    .eq("status", "published")
-    .order("published_at", { ascending: false })
-    .limit(24);
+  let courses: CourseCardData[] = [];
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data } = await supabase
+      .from("courses")
+      .select("id, title, subtitle, slug, level, pricing_model, coach_profiles(slug, headline)")
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .limit(24);
+    courses = (data ?? []) as unknown as CourseCardData[];
+  } catch (err) {
+    console.error("HomePage: failed to load published courses", err);
+  }
 
   return (
     <>
@@ -28,7 +34,7 @@ export default async function HomePage() {
             <p className="mt-1 text-sm text-muted">Published, ready to learn today.</p>
           </div>
         </div>
-        <CourseGrid courses={(courses ?? []) as unknown as CourseCardData[]} />
+        <CourseGrid courses={courses} />
       </section>
 
       <CtaBanner />
