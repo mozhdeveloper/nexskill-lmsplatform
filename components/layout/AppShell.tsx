@@ -16,17 +16,27 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
 
   let isCoach = false;
   let admin = false;
+  let isStudent = false;
   if (user) {
-    const [{ data: coachProfile }, adminCheck] = await Promise.all([
+    const [{ data: coachProfile }, adminCheck, { data: studentRole }] = await Promise.all([
       supabase.from("coach_profiles").select("id").eq("user_id", user.id).maybeSingle(),
       isAdmin(supabase, user.id),
+      supabase.from("user_roles").select("roles!inner(key)").eq("user_id", user.id).eq("roles.key", "student").maybeSingle(),
     ]);
     isCoach = Boolean(coachProfile);
     admin = adminCheck;
+    isStudent = Boolean(studentRole);
   }
 
+  // An account that is ONLY admin (no student/coach role) sees just Admin — keeping a
+  // dedicated admin account scoped to admin work, rather than also surfacing general
+  // browsing/learning chrome it has no reason to use. An admin who also happens to hold a
+  // student or coach role (a dual-purpose account) sees those sections too, since that's an
+  // intentional choice, not shared-chrome leakage.
+  const isAdminOnly = admin && !isStudent && !isCoach;
   const links = [
-    { href: "/learn", label: "My Learning" },
+    ...(isAdminOnly ? [] : [{ href: "/learn/courses", label: "Courses" }]),
+    ...(isStudent ? [{ href: "/learn", label: "My Learning" }] : []),
     ...(isCoach ? [{ href: "/coach", label: "Coach Studio" }] : []),
     ...(admin ? [{ href: "/admin", label: "Admin" }] : []),
   ];

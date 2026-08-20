@@ -39,11 +39,15 @@ async function ensureUser(email: string, displayName: string, roleKeys: string[]
     console.log(`user ${email} already exists`);
   }
 
-  for (const key of roleKeys) {
-    const { data: role } = await supabase.from("roles").select("id").eq("key", key).single();
-    if (role) {
-      await supabase.from("user_roles").upsert({ user_id: userId, role_id: role.id }, { onConflict: "user_id,role_id" });
-    }
+  // Set roles to exactly roleKeys, not just add to them — the handle_new_user trigger already
+  // assigns 'student' by default on signup, so a plain upsert here would leave every seeded
+  // account (including admin) with 'student' stuck alongside whatever role it's actually meant
+  // to have. Callers that want a seeded account to keep 'student' pass it explicitly.
+  const { data: roleRows } = await supabase.from("roles").select("id, key").in("key", roleKeys);
+  const roleIds = (roleRows ?? []).map((r) => r.id);
+  await supabase.from("user_roles").delete().eq("user_id", userId);
+  if (roleIds.length > 0) {
+    await supabase.from("user_roles").insert(roleIds.map((role_id) => ({ user_id: userId, role_id })));
   }
 
   return userId;
@@ -176,12 +180,13 @@ async function publishDemoCourse(courseId: string, actorUserId: string) {
 async function main() {
   console.log("Seeding Nexskill demo data...\n");
 
+  // admin is admin-only, deliberately excluding 'student' — see the ensureUser comment above.
   const adminId = await ensureUser("admin@nexskill.dev", "Nexskill Admin", ["super_admin"]);
-  const coach1Id = await ensureUser("coach1@nexskill.dev", "Mozhde Marivani", ["coach"]);
-  await ensureUser("coach2@nexskill.dev", "Ali Bahrami", ["coach"]);
-  await ensureUser("student1@nexskill.dev", "Priya Santos", []);
-  await ensureUser("student2@nexskill.dev", "Diego Fernandez", []);
-  await ensureUser("student3@nexskill.dev", "Amara Chen", []);
+  const coach1Id = await ensureUser("coach1@nexskill.dev", "Mozhde Marivani", ["student", "coach"]);
+  await ensureUser("coach2@nexskill.dev", "Ali Bahrami", ["student", "coach"]);
+  await ensureUser("student1@nexskill.dev", "Priya Santos", ["student"]);
+  await ensureUser("student2@nexskill.dev", "Diego Fernandez", ["student"]);
+  await ensureUser("student3@nexskill.dev", "Amara Chen", ["student"]);
 
   const coachProfileId = await ensureCoachProfile(coach1Id, "mozhde-marivani", "Master PMU Trainer, 10+ years");
 
