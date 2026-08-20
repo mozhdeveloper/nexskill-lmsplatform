@@ -46,6 +46,14 @@ export default function LoginPage() {
           <h1 className="mb-1 text-2xl font-semibold tracking-tight">Welcome back</h1>
           <p className="mb-6 text-sm text-muted">Sign in to continue learning or teaching.</p>
 
+          <QuickLoginPanel />
+
+          <div className="my-6 flex items-center gap-3">
+            <div className="h-px flex-1 bg-border" />
+            <span className="text-xs font-medium uppercase tracking-wide text-muted">Or sign in manually</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label>Email</Label>
@@ -56,7 +64,7 @@ export default function LoginPage() {
               <Input type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
             {error && <p className="text-sm text-error">{error}</p>}
-            <Button type="submit" loading={loading} className="w-full">
+            <Button type="submit" loading={loading} variant="secondary" className="w-full">
               Sign in
             </Button>
           </form>
@@ -67,8 +75,6 @@ export default function LoginPage() {
               Register
             </Link>
           </p>
-
-          <QuickLoginPanel />
         </div>
       </div>
     </main>
